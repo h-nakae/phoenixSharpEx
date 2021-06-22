@@ -5,6 +5,7 @@ C#でPhoenixサーバーにwebsocket接続するライブラリのリポジト�
 C#クライアント側から送信したメッセージが当該チャットアプリケーションに表示されることを確認しました。
 チャットアプリケーションの実装については、別記事「ElixirとPhoenixでWebSocketを使ったChatアプリケーションを作る」(https://dev.classmethod.jp/articles/chat-app-with-websocket-elixir-phoenix/)をご確認ください。
 
+### 動かす
 プロジェクトが3つあるうち、
 プロジェクト「ConsoleApp1」を見てください。
 こちらは自分で動かしてみたサンプルです。
@@ -32,6 +33,16 @@ PhoenixのWebSocketに接続し、コード内で指定したTopicにJoinしま�
 当該プロジェクト「ConsoleApp1」のルートディレクトリ直下にある、WebSocketTest.csに、
 上記デモのすべてがあります。
 
+
+
+![image](https://user-images.githubusercontent.com/56616438/122851513-0b909f00-d34a-11eb-863e-d87e8f476cee.png)
+
+#### 参照の追加
+System.Security.PermissionsのみNuGetで別途インストールしますが、
+それ以外は当該ソリューション内に作成されたDLLです。
+
+
+#### WebSocket処理
 基本的には接続先URLとTopicを指定してJoinした後、pushで適宜メッセージを送るだけです。
 ```cs
 private const string host = "192.168.25.117:4000";　// 20行目
