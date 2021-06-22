@@ -1,3 +1,57 @@
+## 概要
+C#でPhoenixサーバーにwebsocket接続するライブラリのリポジトリに、自分で動かしたサンプルを追加しただけのリポジトリです。
+
+サンプルでは、Phoenix側では別途チャットアプリケーションを作成しており、
+C#クライアント側から送信したメッセージが当該チャットアプリケーションに表示されることを確認しました。
+チャットアプリケーションの実装については、別記事「ElixirとPhoenixでWebSocketを使ったChatアプリケーションを作る」(https://dev.classmethod.jp/articles/chat-app-with-websocket-elixir-phoenix/)をご確認ください。
+
+プロジェクトが3つあるうち、
+プロジェクト「ConsoleApp1」を見てください。
+こちらは自分で動かしてみたサンプルです。
+※デバッグ実行の際は、スタートアッププロジェクトを当該プロジェクトに切り替えてください。
+手順：　ソリューションで右クリック　⇒　スタートアッププロジェクトの設定
+
+![image](https://user-images.githubusercontent.com/56616438/122849210-07fb1900-d346-11eb-8979-281d195c3d43.png)
+
+デバッグすると、コンソールアプリケーションが開き、
+PhoenixのWebSocketに接続し、コード内で指定したTopicにJoinします。
+![image](https://user-images.githubusercontent.com/56616438/122849422-74761800-d346-11eb-8abe-ae86e0f6b3fc.png)
+
+コンソールは入力モードになっているので、
+そこに任意の文字列を入力してEnterすると、
+別に用意してあるサンプルチャットアプリケーションにそのメッセージが届きます。
+
+コンソールアプリケーションへの入力↓
+![image](https://user-images.githubusercontent.com/56616438/122849608-cb7bed00-d346-11eb-83f0-e4f4348f1f42.png)
+
+入力したメッセージがチャットアプリケーションに出力されている↓
+![image](https://user-images.githubusercontent.com/56616438/122850962-1991f000-d349-11eb-9969-319594f3a1bd.png)
+
+
+### コーディング
+当該プロジェクト「ConsoleApp1」のルートディレクトリ直下にある、WebSocketTest.csに、
+上記デモのすべてがあります。
+
+基本的には接続先URLとTopicを指定してJoinした後、pushで適宜メッセージを送るだけです。
+```cs
+private const string host = "192.168.25.117:4000";　// 20行目
+・
+・
+socket.Connect(string.Format("ws://{0}/socket", host), null);　// 43行目
+・
+・
+var roomChannel = socket.MakeChannel("room:lobby"); //58行目
+
+// ★messageに送信したい文字列を格納　// 80行目
+var payload = new Dictionary<string, object> {
+   { "body", message }
+};
+
+roomChannel
+  .Push("new_msg", payload)
+  .Receive(Reply.Status.Ok, r => testOkReply = r);
+```
+
 
 ![Imgur](http://i.imgur.com/B8ClrWe.png)
 
