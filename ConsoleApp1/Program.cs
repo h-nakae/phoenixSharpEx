@@ -5,12 +5,9 @@ namespace ConsoleApp1
 {
     class Program
     {
-        
-
         static void Main(string[] args)
         {
-            WebSocketTest.DelaySample();
-
+            WebSocketTest.joinAndPush();
         }
     }
 }

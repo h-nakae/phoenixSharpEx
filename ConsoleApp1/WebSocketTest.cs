@@ -14,22 +14,14 @@ namespace ConsoleApp1
     public class WebSocketTest
     {
 		private const int networkDelay = 2000 /* ms */;
-		private const string host = "phoenix-integration-tester.herokuapp.com";
 
-		public static async void DelaySample()
+        // ★接続先URL 
+        //private const string host = "phoenix-integration-tester.herokuapp.com";
+        private const string host = "192.168.25.117:4000";
+
+        public static async void joinAndPush()
         {
-			Console.WriteLine("start");
-			/// 
-			/// setup
-			/// 
-			var address = string.Format("http://{0}/api/health-check", host);
-
-			// heroku health check
-			using (WebClient client = new WebClient())
-			{
-				client.Headers.Add("Content-Type", "application/json");
-				client.DownloadString(address);
-			}
+			Console.WriteLine("app start");
 
 			var onOpenCount = 0;
 			Socket.OnOpenDelegate onOpenCallback = () => onOpenCount++;
@@ -61,8 +53,11 @@ namespace ConsoleApp1
 				{ "auth", "doesn't matter" },
 			};
 
-			var roomChannel = socket.MakeChannel("tester:phoenix-sharp");
-			roomChannel.On(Message.InBoundEvent.phx_close, m => closeMessage = m);
+            //★接続先Topic
+            //var roomChannel = socket.MakeChannel("tester:phoenix-sharp");
+            var roomChannel = socket.MakeChannel("room:lobby");
+
+            roomChannel.On(Message.InBoundEvent.phx_close, m => closeMessage = m);
 			roomChannel.On(Message.InBoundEvent.phx_error, m => errorMessage = m);
 			roomChannel.On("after_join", m => Console.WriteLine("after join: " + m.payload["message"].Value<string>()));
 
@@ -70,24 +65,31 @@ namespace ConsoleApp1
 				.Receive(Reply.Status.Ok, r => joinOkReply = r)
 				.Receive(Reply.Status.Error, r => joinErrorReply = r);
 
-			/// 
-			/// test echo reply
-			/// 
-			var payload = new Dictionary<string, object> {
-					{ "echo", "test" }
-			};
-
 			Reply? testOkReply = null;
 
-			roomChannel
-				.Push("reply_test", payload)
-				.Receive(Reply.Status.Ok, r => testOkReply = r);
+            while(1 == 1)
+            {
+                string message = Console.ReadLine();
 
-			//Console.WriteLine("aaa: " + testOkReply.Value.response.ToObject<Dictionary<string, object>>());
-			Console.WriteLine("end");
-			//await Task.Delay(5000);
+                if (message == "end")
+                {
+                    break;
+                }
+                else
+                {
+                    // ★messageに送信したい文字列を格納
+                    var payload = new Dictionary<string, object> {
+                        { "body", message }
+                    };
 
-			Console.ReadLine();
+                    roomChannel
+                        .Push("new_msg", payload)
+                        .Receive(Reply.Status.Ok, r => testOkReply = r);
+                }
+            }
+
+            //Console.WriteLine("aaa: " + testOkReply.Value.response.ToObject<Dictionary<string, object>>());
+            Console.WriteLine("app end");
 		}
     }
 }
