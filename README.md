@@ -30,19 +30,14 @@ PhoenixのWebSocketに接続し、コード内で指定したTopicにJoinしま�
 
 
 ### コーディング
-当該プロジェクト「ConsoleApp1」のルートディレクトリ直下にある、WebSocketTest.csに、
-上記デモのすべてがあります。
-
-
-
-![image](https://user-images.githubusercontent.com/56616438/122851513-0b909f00-d34a-11eb-863e-d87e8f476cee.png)
-
 #### 参照の追加
 System.Security.PermissionsのみNuGetで別途インストールしますが、
 それ以外は当該ソリューション内に作成されたDLLです。
-
+![image](https://user-images.githubusercontent.com/56616438/122851513-0b909f00-d34a-11eb-863e-d87e8f476cee.png)
 
 #### WebSocket処理
+当該プロジェクト「ConsoleApp1」のルートディレクトリ直下にある、WebSocketTest.csに、
+上記デモのすべてがあります。
 基本的には接続先URLとTopicを指定してJoinした後、pushで適宜メッセージを送るだけです。
 ```cs
 private const string host = "192.168.25.117:4000";　// 20行目
